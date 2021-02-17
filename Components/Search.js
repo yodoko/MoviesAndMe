@@ -1,21 +1,50 @@
 import React from 'react'
 import {View, TextInput, Button, StyleSheet, Alert, Text, FlatList } from 'react-native'
-import films from '../Helpers/filmsData'
+// import films from '../Helpers/filmsData'
 import FilmItem from './FilmItem'
+import { getFilmsFromApiWithSearchedText } from '../API/TMDBApi'
 
 class Search extends React.Component {
+
+    constructor(props) {
+        super(props)
+        this.searchedText = ""
+        this.state = {
+            films: []
+        }
+        // Ici on va créer les propriétés de notre component custom Search
+    }
+
+    _loadFilms() {
+        console.log(this.searchedText) // Un log pour vérifier qu'on a bien le texte du TextInput
+        if (this.searchedText.length > 0) { // Seulement si le texte recherché n'est pas vide
+            getFilmsFromApiWithSearchedText(this.searchedText).then(data => {
+                this.setState({ films: data.results })
+            })
+        }
+    }
+
+    _searchTextInputChanged(text) {
+        this.searchedText = text
+    }
+
     render() {
+        // console.log("RENDER")
         return (
             <View style = {styles.main_container}>
-                <TextInput style = {styles.textinput} placeholder='Titre du film'/>
+                <TextInput
+                    style = {styles.textinput}
+                    placeholder='Titre du film'
+                    onChangeText={(text) => this._searchTextInputChanged(text)}
+                />
                 <Button
                     title="Rechercher"
-                    onPress={() => Alert.alert('Bouton *Rechercher* appuyé')}
+                    onPress={() => this._loadFilms()}
                     // onPress={() => {}} : Simplification de la fonction : onPress={function() {}}
                 />
                 <FlatList
                     style = {styles.flat_list}
-                    data={films}
+                    data={this.state.films}
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={({item}) => <FilmItem film={item}/>}
                 />
