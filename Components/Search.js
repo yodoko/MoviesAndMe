@@ -91,7 +91,6 @@ class Search extends React.Component {
 const styles = StyleSheet.create({
     main_container: {
         flex: 1,
-        // flexDirection: 'row',
         marginTop: 25,
         // justifyContent: 'space-between', // center, flex-start, flex-end, space-between, space-around, space-evenly
         // alignItems: 'stretch', // center, flex-start, flex-end, stretch
